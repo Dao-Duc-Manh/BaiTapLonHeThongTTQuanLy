@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Server - Quản Lý Hệ Thống</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .status-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    </style>
+</head>
+<body class="bg-[#f8fafc] flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900 text-gray-400 p-6 flex flex-col fixed h-full">
+        <div class="flex items-center gap-3 text-white mb-10">
+            <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+                <i class="fas fa-server"></i>
+            </div>
+            <div class="leading-tight">
+                <span class="text-lg font-bold block">Admin Server</span>
+                <span class="text-[10px] text-green-500 font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full status-pulse"></span> TRỰC TUYẾN
+                </span>
+            </div>
+        </div>
+        <nav class="space-y-1 text-sm flex-1">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/20">
+                <i class="fas fa-chart-line"></i> Tổng quan
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition">
+                <i class="fas fa-list-ul"></i> Đơn hàng <span id="badgeCount" class="ml-auto bg-amber-500 text-white px-2 py-0.5 rounded-full text-[10px] hidden">0</span>
+            </a>
+        </nav>
+        <div class="text-[10px] text-gray-600 border-t border-white/5 pt-4">
+            Thiết bị chủ: Windows PC (192.168.1.1)
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 ml-64 p-10">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Trung Tâm Điều Hành</h1>
+                <p class="text-sm text-gray-400">Tự động nhận yêu cầu từ thiết bị khách.</p>
+            </div>
+            <button onclick="clearData()" class="text-xs text-red-500 hover:underline">Xóa lịch sử test</button>
+        </header>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <p class="text-xs font-bold text-gray-400 uppercase">Tổng đơn nhận</p>
+                <h3 id="statTotal" class="text-3xl font-bold mt-1">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <p class="text-xs font-bold text-gray-400 uppercase">Doanh thu dự kiến</p>
+                <h3 id="statRevenue" class="text-3xl font-bold mt-1 text-amber-600">0đ</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <p class="text-xs font-bold text-gray-400 uppercase">Doanh thu thực tế</p>
+                <h3 id="statActualRevenue" class="text-3xl font-bold mt-1 text-green-600">0đ</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <p class="text-xs font-bold text-gray-400 uppercase">Trạng thái Server</p>
+                <h3 class="text-xl font-bold mt-2 text-green-500"><i class="fas fa-wifi mr-2"></i>Đang lắng nghe...</h3>
+            </div>
+        </div>
+
+        <!-- Order Table -->
+        <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+            <div class="p-4 border-b bg-gray-50 flex items-center justify-between">
+                <h4 class="font-bold text-sm">Yêu cầu thời gian thực</h4>
+                <div id="syncIndicator" class="text-[10px] text-gray-400 flex items-center gap-1 opacity-0 transition-opacity">
+                    <i class="fas fa-sync fa-spin"></i> Đang đồng bộ dữ liệu khách...
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-[10px] uppercase font-bold text-gray-400 border-b">
+                        <tr>
+                            <th class="px-6 py-4">ID / Khách hàng</th>
+                            <th class="px-6 py-4">Gói dịch vụ</th>
+                            <th class="px-6 py-4">Giá trị</th>
+                            <th class="px-6 py-4">Thời gian nhận</th>
+                            <th class="px-6 py-4">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="divide-y">
+                        <!-- Dữ liệu sẽ xuất hiện ở đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="fixed inset-0 bg-black/60 hidden z-[100] overflow-y-auto p-4 flex justify-center py-10">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-2xl h-fit overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="p-8 border-b bg-gray-50 flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-extrabold text-gray-900">Chi Tiết Đơn Hàng</h3>
+                    <p class="text-sm text-gray-500">Thông tin chi tiết về lịch đặt của khách hàng</p>
+                </div>
+                <button onclick="closeOrderDetailsModal()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition">
+                    <i class="fas fa-times text-gray-400"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-8">
+                <div id="orderDetailsContent" class="space-y-6">
+                    <!-- Order details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Sound -->
+    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script>
+        const socket = io();
+        let orders = [];
+
+        function loadOrders(orderList) {
+            orders = orderList || [];
+            const tableBody = document.getElementById('adminTableBody');
+            const indicator = document.getElementById('syncIndicator');
+
+            // Hiển thị hiệu ứng đồng bộ
+            indicator.classList.remove('opacity-0');
+            setTimeout(() => indicator.classList.add('opacity-0'), 1000);
+
+            // Cập nhật thống kê
+            document.getElementById('statTotal').innerText = orders.length;
+            let totalRevenue = 0;
+            let actualRevenue = 0;
+
+            tableBody.innerHTML = '';
+            // Create a reversed copy for display but keep original orders for lookup
+            const displayOrders = [...orders].reverse();
+            displayOrders.forEach(order => {
+                totalRevenue += order.total;
+                // Calculate actual revenue from deposits (assuming 30% deposit)
+                if (order.fullPaid) {
+                    actualRevenue += order.total;
+                } else if (order.depositPaid) {
+                    actualRevenue += Math.round(order.total * 0.3);
+                }
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-amber-50/30 transition">
+                        <td class="px-6 py-4">
+                            <div class="font-bold">#${order.id} - ${order.customer}</div>
+                            <div class="text-[10px] text-gray-400">${order.phone}</div>
+                        </td>
+                        <td class="px-6 py-4 font-medium text-amber-600">${order.package}</td>
+                        <td class="px-6 py-4 font-bold text-gray-900">${order.total.toLocaleString()}đ</td>
+                        <td class="px-6 py-4 text-gray-500">${order.time}</td>
+                        <td class="px-6 py-4">
+                            <button onclick="confirmOrder(${order.id})" class="px-3 py-1 bg-green-500 text-white text-[10px] font-bold rounded-lg hover:bg-green-600 transition">XÁC NHẬN</button>
+                            <button onclick="viewOrderDetails(${order.id})" class="ml-2 px-3 py-1 bg-blue-500 text-white text-[10px] font-bold rounded-lg hover:bg-blue-600 transition">XEM CHI TIẾT</button>
+                            <div class="mt-2 space-y-1">
+                                <button onclick="confirmDeposit(${order.id})" class="block w-full px-2 py-1 ${order.depositPaid ? 'bg-green-500' : 'bg-yellow-500'} text-white text-[9px] font-bold rounded hover:opacity-80 transition">${order.depositPaid ? 'ĐẶT CỌC ✓' : 'XÁC NHẬN ĐẶT CỌC'}</button>
+                                <button onclick="confirmFullPayment(${order.id})" class="block w-full px-2 py-1 ${order.fullPaid ? 'bg-green-500' : 'bg-purple-500'} text-white text-[9px] font-bold rounded hover:opacity-80 transition">${order.fullPaid ? 'THANH TOÁN ✓' : 'XÁC NHẬN THANH TOÁN'}</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('statRevenue').innerText = totalRevenue.toLocaleString() + 'đ';
+            document.getElementById('statActualRevenue').innerText = actualRevenue.toLocaleString() + 'đ';
+
+            // Cập nhật badge menu
+            const badge = document.getElementById('badgeCount');
+            if(orders.length > 0) {
+                badge.innerText = orders.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function confirmOrder(orderId) {
+            socket.emit('confirmOrder', orderId);
+        }
+
+        // Lắng nghe sự kiện từ server
+        socket.on('loadOrders', (orderList) => {
+            loadOrders(orderList);
+        });
+
+        socket.on('orderUpdate', (newOrder) => {
+            document.getElementById('notifSound').play().catch(e => {});
+            loadOrders([...orders, newOrder]);
+        });
+
+        socket.on('orderConfirmed', (orderId) => {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'Đã xác nhận';
+                loadOrders(orders);
+            }
+        });
+
+        socket.on('paymentStatusUpdated', (data) => {
+            const { orderId, depositPaid, fullPaid } = data;
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.depositPaid = depositPaid;
+                order.fullPaid = fullPaid;
+                loadOrders(orders);
+            }
+        });
+
+        function clearData() {
+            if(confirm("Xóa toàn bộ đơn hàng test?")) {
+                orders = [];
+                loadOrders([]);
+            }
+        }
+
+        function viewOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const content = document.getElementById('orderDetailsContent');
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Thông tin đơn hàng</label>
+                            <div class="bg-gray-50 p-4 rounded-2xl">
+                                <div class="font-bold text-lg">#${order.id}</div>
+                                <div class="text-sm text-gray-600">Trạng thái: <span class="font-medium ${order.status === 'Đã xác nhận' ? 'text-green-600' : 'text-amber-600'}">${order.status || 'MỚI'}</span></div>
+                                <div class="text-sm text-gray-600">Thời gian đặt: ${order.time}</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Thông tin khách hàng</label>
+                            <div class="bg-gray-50 p-4 rounded-2xl">
+                                <div class="font-bold">${order.customer}</div>
+                                <div class="text-sm text-gray-600">${order.phone}</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Gói dịch vụ</label>
+                            <div class="bg-gray-50 p-4 rounded-2xl">
+                                <div class="font-bold text-amber-600">${order.package}</div>
+                                <div class="text-sm text-gray-600">Phong cách: ${order.style || 'Chưa chọn'}</div>
+                                <div class="text-sm text-gray-600">Tổng tiền: ${order.total.toLocaleString()}đ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Thông tin sự kiện</label>
+                            <div class="bg-gray-50 p-4 rounded-2xl">
+                                <div class="text-sm text-gray-600">Ngày tổ chức: ${order.date || 'Chưa chọn'}</div>
+                                <div class="text-sm text-gray-600">Địa điểm: ${order.location || 'Chưa chọn'}</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Dịch vụ bổ sung</label>
+                            <div class="bg-gray-50 p-4 rounded-2xl">
+                                ${order.extras && order.extras.length > 0 ? order.extras.map(extra => `<div class="text-sm">• ${extra}</div>`).join('') : '<div class="text-sm text-gray-500">Không có dịch vụ bổ sung</div>'}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Ghi chú</label>
+                            <div class="bg-gray-50 p-4 rounded-2xl">
+                                <div class="text-sm">${order.note || 'Không có ghi chú'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('orderDetailsModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOrderDetailsModal() {
+            document.getElementById('orderDetailsModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function confirmDeposit(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            if (!order.depositPaid) {
+                if (confirm(`Xác nhận khách hàng ${order.customer} đã thanh toán tiền đặt cọc?`)) {
+                    order.depositPaid = true;
+                    socket.emit('updatePaymentStatus', { orderId, depositPaid: true });
+                    loadOrders(orders);
+                }
+            } else {
+                if (confirm(`Hủy xác nhận đặt cọc cho khách hàng ${order.customer}?`)) {
+                    order.depositPaid = false;
+                    socket.emit('updatePaymentStatus', { orderId, depositPaid: false });
+                    loadOrders(orders);
+                }
+            }
+        }
+
+        function confirmFullPayment(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            if (!order.fullPaid) {
+                if (confirm(`Xác nhận khách hàng ${order.customer} đã thanh toán đầy đủ tổng tiền tổ chức sự kiện?`)) {
+                    order.fullPaid = true;
+                    socket.emit('updatePaymentStatus', { orderId, fullPaid: true });
+                    loadOrders(orders);
+                }
+            } else {
+                if (confirm(`Hủy xác nhận thanh toán đầy đủ cho khách hàng ${order.customer}?`)) {
+                    order.fullPaid = false;
+                    socket.emit('updatePaymentStatus', { orderId, fullPaid: false });
+                    loadOrders(orders);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

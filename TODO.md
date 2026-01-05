@@ -1,0 +1,3 @@
+- [ ] Replace the Birthday Party image with a suitable birthday-themed image
+- [ ] Add JavaScript code to define the "openBooking" function for booking functionality
+- [ ] Test the changes to ensure the image displays correctly and the booking button works

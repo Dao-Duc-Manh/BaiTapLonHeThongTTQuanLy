@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventDecor - Nghệ Thuật Trang Trí Sự Kiện</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        .option-card.active { border-color: #f59e0b; background-color: #fffbeb; }
+        .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .gradient-text { background: linear-gradient(to right, #f59e0b, #d97706); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="glass-effect border-b border-gray-100 sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <img src="Logo.png" alt="Logo" class="w-10 h-10 rounded-xl shadow-lg shadow-amber-500/30">
+                <span class="text-amber-600">MAT: Minimalist Art Touch</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden md:flex gap-4">
+                    <a href="#" class="py-2 text-gray-600 font-medium hover:text-amber-600">Trang chủ</a>
+                    <a href="#services" class="py-2 text-gray-600 font-medium hover:text-amber-600">Dịch vụ</a>
+                    <a href="#contact" class="py-2 text-gray-600 font-medium hover:text-amber-600">Liên hệ</a>
+                </div>
+                <div id="auth-area" class="flex gap-2 items-center"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section với Background Image -->
+    <div class="relative h-[500px] w-full overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed"></div>
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
+        <div class="relative max-w-7xl mx-auto px-4 h-full flex flex-col justify-center items-center text-center text-white">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">Biến Khoảnh Khắc Thành <span class="text-amber-400">Kiệt Tác</span></h1>
+            <p class="text-lg md:text-xl text-gray-200 max-w-2xl mb-8">Chúng tôi kiến tạo không gian sự kiện đẳng cấp, nơi cảm xúc thăng hoa và kỷ niệm được lưu giữ mãi mãi.</p>
+            <a href="#services" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-bold transition transform hover:scale-105 shadow-lg shadow-amber-500/30">Khám Phá Ngay</a>
+        </div>
+    </div>
+
+    <section id="services" class="max-w-7xl mx-auto px-4 py-16 -mt-20 relative z-10">
+        <div class="text-center mb-12">
+            <span class="bg-white/90 backdrop-blur px-4 py-1 rounded-full text-amber-600 font-bold text-sm uppercase tracking-wider shadow-sm">Dịch vụ của chúng tôi</span>
+            <h2 class="text-3xl font-extrabold mt-4 text-gray-900">Chọn Gói Trang Trí Của Bạn</h2>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-8">
+            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-lg overflow-hidden hover:shadow-2xl transition group w-full md:w-96 flex flex-col">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop" alt="Wedding" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                </div>
+                <div class="p-8 flex-1 flex flex-col">
+                    <div class="mb-4">
+                        <span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Phổ biến</span>
+                        <h3 class="text-2xl font-bold mt-2">Wedding Gold</h3>
+                        <p class="text-gray-500 text-sm mt-1">Trang trí tiệc cưới trọn gói với hoa tươi và ánh sáng nghệ thuật.</p>
+                    </div>
+                    <div class="text-3xl font-black text-amber-600 mb-6">15.000.000đ</div>
+                    <button onclick="openBooking('Wedding Gold', 15000000)" class="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold group-hover:bg-amber-600 transition mt-auto">Lựa chọn & Tùy chỉnh</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-lg overflow-hidden hover:shadow-2xl transition group w-full md:w-96 flex flex-col">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?q=80&w=800&auto=format&fit=crop" alt="Birthday" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                </div>
+                <div class="p-8 flex-1 flex flex-col">
+                    <div class="mb-4">
+                        <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Sôi động</span>
+                        <h3 class="text-2xl font-bold mt-2">Birthday Party</h3>
+                        <p class="text-gray-500 text-sm mt-1">Không gian sinh nhật đầy màu sắc, backdrop chụp hình ấn tượng.</p>
+                    </div>
+                    <div class="text-3xl font-black text-amber-600 mb-6">5.000.000đ</div>
+                    <button onclick="openBooking('Birthday Party', 5000000)" class="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold group-hover:bg-amber-600 transition mt-auto">Lựa chọn & Tùy chỉnh</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-lg overflow-hidden hover:shadow-2xl transition group w-full md:w-96 flex flex-col">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1561489413-985b06da5bee?q=80&w=800&auto=format&fit=crop" alt="Opening" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                </div>
+                <div class="p-8 flex-1 flex flex-col">
+                    <div class="mb-4">
+                        <span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Chuyên nghiệp</span>
+                        <h3 class="text-2xl font-bold mt-2">Grand Opening</h3>
+                        <p class="text-gray-500 text-sm mt-1">Khai trương hồng phát, sự kiện công ty sang trọng và đẳng cấp.</p>
+                    </div>
+                    <div class="text-3xl font-black text-amber-600 mb-6">8.000.000đ</div>
+                    <button onclick="openBooking('Grand Opening', 8000000)" class="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold group-hover:bg-amber-600 transition mt-auto">Lựa chọn & Tùy chỉnh</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white pt-20 pb-10 mt-20 rounded-t-[3rem]">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <img src="Logo.png" alt="Logo" class="w-10 h-10 rounded-xl shadow-lg shadow-amber-500/30">
+                        <span class="text-xl font-bold text-white">MAT Decor</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-6">
+                        Chuyên cung cấp dịch vụ trang trí sự kiện cao cấp, mang đến không gian sang trọng và tinh tế cho những khoảnh khắc đáng nhớ nhất của bạn.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition duration-300"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition duration-300"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition duration-300"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-amber-500">Liên Kết Nhanh</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Trang chủ</a></li>
+                        <li><a href="#services" class="hover:text-white transition">Dịch vụ</a></li>
+                        <li><a href="#" class="hover:text-white transition">Dự án đã thực hiện</a></li>
+                        <li><a href="#" class="hover:text-white transition">Về chúng tôi</a></li>
+                        <li><a href="#" class="hover:text-white transition">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div id="contact">
+                    <h4 class="text-lg font-bold mb-6 text-amber-500">Liên Hệ</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-amber-500"></i>
+                            <span>Số 1,Phố Xốm, Trường Đại Học Đại Nam</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-amber-500"></i>
+                            <span>0333504127</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-amber-500"></i>
+                            <span>Daomanh027@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-amber-500">Đăng Ký Nhận Tin</h4>
+                    <p class="text-gray-400 mb-4">Nhận thông báo về các ưu đãi mới nhất.</p>
+                    <form class="relative">
+                        <input type="email" placeholder="Email của bạn" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-amber-500 transition">
+                        <button class="absolute right-2 top-2 w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center hover:bg-amber-600 transition text-white">
+                            <i class="fas fa-arrow-right text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">© 2024 MAT Decor. All rights reserved.</p>
+                <div class="flex gap-6 text-sm text-gray-500">
+                    <a href="#" class="hover:text-white transition">Điều khoản</a>
+                    <a href="#" class="hover:text-white transition">Chính sách bảo mật</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="bookingModal" class="fixed inset-0 bg-black/60 hidden z-[100] overflow-y-auto p-4 flex justify-center py-10">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-2xl h-fit overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div class="p-8 border-b bg-gray-50 flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-extrabold text-gray-900" id="modalTitle">Tùy chỉnh gói dịch vụ</h3>
+                    <p class="text-sm text-gray-500">Thiết kế không gian theo ý muốn của bạn</p>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition">
+                    <i class="fas fa-times text-gray-400"></i>
+                </button>
+            </div>
+
+            <div class="p-8">
+                <form id="bookingForm" class="space-y-8">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">1. Chọn phong cách thiết kế</label>
+                        <div class="grid grid-cols-3 gap-4">
+                            <label class="cursor-pointer block">
+                                <input type="radio" name="style" value="Hiện đại" class="hidden peer" checked>
+                                <div class="p-4 border border-gray-200 rounded-2xl flex items-center gap-4 hover:bg-gray-50 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-md transition-all peer-checked:[&_.check-circle]:bg-green-500 peer-checked:[&_.check-circle]:border-green-500 peer-checked:[&_.check-icon]:opacity-100">
+                                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-xl object-cover shadow-sm" alt="Modern">
+                                    <div class="flex-1">
+                                        <span class="block font-bold text-gray-800">Hiện đại</span>
+                                    </div>
+                                    <div class="check-circle w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="check-icon fas fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer block">
+                                <input type="radio" name="style" value="Cổ điển" class="hidden peer">
+                                <div class="p-4 border border-gray-200 rounded-2xl flex items-center gap-4 hover:bg-gray-50 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-md transition-all peer-checked:[&_.check-circle]:bg-green-500 peer-checked:[&_.check-circle]:border-green-500 peer-checked:[&_.check-icon]:opacity-100">
+                                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-xl object-cover shadow-sm" alt="Classic">
+                                    <div class="flex-1">
+                                        <span class="block font-bold text-gray-800">Cổ điển</span>
+                                    </div>
+                                    <div class="check-circle w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="check-icon fas fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer block">
+                                <input type="radio" name="style" value="Tối giản" class="hidden peer">
+                                <div class="p-4 border border-gray-200 rounded-2xl flex items-center gap-4 hover:bg-gray-50 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-md transition-all peer-checked:[&_.check-circle]:bg-green-500 peer-checked:[&_.check-circle]:border-green-500 peer-checked:[&_.check-icon]:opacity-100">
+                                    <img src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-xl object-cover shadow-sm" alt="Minimalist">
+                                    <div class="flex-1">
+                                        <span class="block font-bold text-gray-800">Tối giản</span>
+                                    </div>
+                                    <div class="check-circle w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="check-icon fas fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">2. Dịch vụ bổ sung (Tùy chọn)</label>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-4 border rounded-2xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" name="extra" value="Quay phim & Chụp ảnh" class="w-5 h-5 accent-amber-500 mr-4">
+                                <span class="flex-1 font-medium text-gray-700">Quay phim & Chụp ảnh chuyên nghiệp</span>
+                                <span class="text-amber-600 font-bold">+3.000k</span>
+                            </label>
+                            <label class="flex items-center p-4 border rounded-2xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" name="extra" value="Hệ thống âm thanh/ánh sáng" class="w-5 h-5 accent-amber-500 mr-4">
+                                <span class="flex-1 font-medium text-gray-700">Hệ thống âm thanh & Ánh sáng sân khấu</span>
+                                <span class="text-amber-600 font-bold">+2.500k</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">3. Thông tin chi tiết của khách hàng</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <input type="text" id="custName" placeholder="Họ và tên" class="w-full border p-4 pl-12 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition">
+                                    <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                                <div class="relative">
+                                    <input type="tel" id="custPhone" placeholder="Số điện thoại" class="w-full border p-4 pl-12 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition">
+                                    <i class="fas fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <input type="date" id="eventDate" class="w-full border p-4 pl-12 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition">
+                                    <i class="fas fa-calendar-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                                <div class="relative">
+                                    <input type="text" id="eventLocation" placeholder="Địa chỉ tổ chức sự kiện" class="w-full border p-4 pl-12 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition">
+                                    <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <textarea id="custNote" rows="3" placeholder="Ghi chú thêm (Ví dụ: Tone màu chủ đạo, yêu cầu đặc biệt...)" class="w-full border p-4 pl-12 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition"></textarea>
+                            <i class="fas fa-sticky-note absolute left-4 top-4 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 p-6 rounded-[2rem] border-2 border-amber-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">Gói cơ bản:</span>
+                            <span class="font-bold" id="basePriceDisplay">0đ</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-amber-200">
+                            <span class="text-amber-800 font-black">TIỀN CỌC GỬI SERVER (30%):</span>
+                            <span class="text-2xl font-black text-amber-600" id="depositDisplay">0đ</span>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="submitBooking()" class="w-full py-5 bg-amber-500 text-white rounded-2xl font-black text-lg shadow-xl shadow-amber-200 hover:bg-amber-600 transition-transform active:scale-95">XÁC NHẬN & GỬI YÊU CẦU</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="successMessage" class="fixed inset-0 bg-white/95 hidden z-[200] flex flex-col items-center justify-center text-center p-6 animate-in fade-in duration-500">
+        <div class="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mb-6">
+            <i class="fas fa-check"></i>
+        </div>
+        <h2 class="text-3xl font-black mb-2">Gửi Yêu Cầu Thành Công!</h2>
+        <p class="text-gray-500 max-w-sm">Dữ liệu đã được chuyển thẳng đến máy chủ Admin. Chúng tôi sẽ liên hệ với bạn trong giây lát.</p>
+        <button onclick="location.reload()" class="mt-8 px-10 py-4 bg-gray-900 text-white rounded-2xl font-bold">Quay lại trang chủ</button>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 bg-black/60 hidden z-[150] flex justify-center items-center p-4">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-extrabold text-gray-900">Đăng Nhập</h3>
+                    <p class="text-gray-500">Đăng nhập để đặt lịch trang trí</p>
+                </div>
+                <form id="loginForm" class="space-y-4">
+                    <input type="email" id="loginEmail" placeholder="Email" class="w-full border p-4 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition" required>
+                    <input type="password" id="loginPassword" placeholder="Mật khẩu" class="w-full border p-4 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition" required>
+                    <button type="submit" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold hover:bg-amber-600 transition">Đăng Nhập</button>
+                </form>
+                <div class="text-center mt-4">
+                    <button onclick="showRegister()" class="text-amber-600 font-medium">Chưa có tài khoản? Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="registerModal" class="fixed inset-0 bg-black/60 hidden z-[150] flex justify-center items-center p-4">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-extrabold text-gray-900">Đăng Ký</h3>
+                    <p class="text-gray-500">Tạo tài khoản để đặt lịch trang trí</p>
+                </div>
+                <form id="registerForm" class="space-y-4">
+                    <input type="text" id="registerName" placeholder="Họ và tên" class="w-full border p-4 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition" required>
+                    <input type="email" id="registerEmail" placeholder="Email" class="w-full border p-4 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition" required>
+                    <input type="password" id="registerPassword" placeholder="Mật khẩu" class="w-full border p-4 rounded-2xl outline-none focus:border-amber-500 bg-gray-50 transition" required>
+                    <button type="submit" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold hover:bg-amber-600 transition">Đăng Ký</button>
+                </form>
+                <div class="text-center mt-4">
+                    <button onclick="showLogin()" class="text-amber-600 font-medium">Đã có tài khoản? Đăng nhập</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let selectedPkg = "";
+        let basePrice = 0;
+        let currentUser = null;
+
+        window.onload = function() {
+            checkAuth();
+        };
+
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+            }
+            updateUserUI();
+        }
+
+        function updateUserUI() {
+            const authArea = document.getElementById('auth-area');
+            if (currentUser) {
+                authArea.innerHTML = `
+                    <span class="text-gray-600 text-sm font-bold hidden sm:block">Hi, ${currentUser.name}</span>
+                    <button onclick="logout()" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl font-bold text-sm hover:bg-red-100 transition">Đăng xuất</button>
+                `;
+            } else {
+                authArea.innerHTML = `
+                    <button onclick="showLogin()" class="text-gray-600 font-bold hover:text-amber-600 px-3 py-2 transition text-sm">Đăng nhập</button>
+                    <button onclick="showRegister()" class="bg-gray-900 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-amber-600 transition">Đăng ký</button>
+                `;
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('registerModal').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('registerModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            updateUserUI();
+            location.reload();
+        }
+
+        function openBooking(name, price) {
+            if (!currentUser) {
+                showLogin();
+                return;
+            }
+            selectedPkg = name;
+            basePrice = price;
+            document.getElementById('modalTitle').innerText = "Tùy chỉnh: " + name;
+            document.getElementById('basePriceDisplay').innerText = price.toLocaleString() + 'đ';
+            document.getElementById('depositDisplay').innerText = (price * 0.3).toLocaleString() + 'đ';
+            document.getElementById('bookingModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('registerModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            socket.emit('login', { email, password });
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            socket.emit('register', { name, email, password });
+        });
+
+        socket.on('loginSuccess', function(user) {
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            updateUserUI();
+            closeModal();
+            alert('Đăng nhập thành công!');
+        });
+
+        socket.on('loginError', function(message) {
+            alert(message);
+        });
+
+        socket.on('registerSuccess', function(user) {
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            updateUserUI();
+            closeModal();
+            alert('Đăng ký thành công!');
+        });
+
+        socket.on('registerError', function(message) {
+            alert(message);
+        });
+
+        socket.on('authError', function(message) {
+            alert(message);
+            showLogin();
+        });
+
+        function submitBooking() {
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const date = document.getElementById('eventDate').value;
+            const location = document.getElementById('eventLocation').value;
+            const note = document.getElementById('custNote').value;
+
+            if(!name || !phone || !date || !location) {
+                return alert("Vui lòng điền các thông tin bắt buộc (*)");
+            }
+
+            const style = document.querySelector('input[name="style"]:checked').value;
+            const extras = Array.from(document.querySelectorAll('input[name="extra"]:checked')).map(el => el.value);
+
+            let extraCost = 0;
+            extras.forEach(extra => {
+                if (extra === "Quay phim & Chụp ảnh") {
+                    extraCost += 3000000;
+                } else if (extra === "Hệ thống âm thanh/ánh sáng") {
+                    extraCost += 2500000;
+                }
+            });
+            const total = basePrice + extraCost;
+
+            const bookingData = {
+                id: Math.floor(Math.random() * 9000) + 1000,
+                customer: name,
+                phone: phone,
+                package: selectedPkg,
+                style: style,
+                extras: extras,
+                location: location,
+                date: date,
+                note: note,
+                total: total,
+                depositPaid: false,
+                fullPaid: false,
+                time: new Date().toLocaleString('vi-VN'),
+                status: "MỚI",
+                userId: currentUser.id
+            };
+
+            socket.emit('newBooking', bookingData);
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

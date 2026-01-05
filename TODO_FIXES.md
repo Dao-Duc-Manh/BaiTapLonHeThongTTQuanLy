@@ -1,0 +1,4 @@
+- [x] Add handler for 'updatePaymentStatus' event in server.js
+- [x] Fix price calculation in KhachHang.html to include extras costs
+- [x] Initialize depositPaid and fullPaid fields in server.js for new bookings
+- [x] Ensure proper data synchronization between admin and server
