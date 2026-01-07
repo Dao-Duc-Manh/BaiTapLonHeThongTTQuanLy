@@ -13,6 +13,7 @@
         body { font-family: 'Inter', sans-serif; }
         .status-pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .period-btn.active { background-color: #f59e0b; }
     </style>
 </head>
 <body class="bg-[#f8fafc] flex min-h-screen">
@@ -58,19 +59,126 @@
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <p class="text-xs font-bold text-gray-400 uppercase">Tổng đơn nhận</p>
                 <h3 id="statTotal" class="text-3xl font-bold mt-1">0</h3>
+                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-arrow-up text-green-500"></i> +12% so với tháng trước</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <p class="text-xs font-bold text-gray-400 uppercase">Doanh thu dự kiến</p>
                 <h3 id="statRevenue" class="text-3xl font-bold mt-1 text-amber-600">0đ</h3>
+                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-arrow-up text-green-500"></i> +8% so với tháng trước</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <p class="text-xs font-bold text-gray-400 uppercase">Doanh thu thực tế</p>
                 <h3 id="statActualRevenue" class="text-3xl font-bold mt-1 text-green-600">0đ</h3>
+                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-arrow-up text-green-500"></i> +15% so với tháng trước</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <p class="text-xs font-bold text-gray-400 uppercase">Trạng thái Server</p>
                 <h3 class="text-xl font-bold mt-2 text-green-500"><i class="fas fa-wifi mr-2"></i>Đang lắng nghe...</h3>
+                <p class="text-xs text-gray-500 mt-1">Uptime: 99.9%</p>
             </div>
+        </div>
+
+
+
+        <!-- Service Packages -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white rounded-2xl border shadow-sm p-6 hover:shadow-lg transition">
+                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-birthday-cake text-amber-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-lg mb-2">Tiệc Sinh Nhật</h4>
+                <p class="text-sm text-gray-600 mb-4">Tổ chức tiệc sinh nhật chuyên nghiệp với không gian trang trí đẹp mắt</p>
+                <div class="text-2xl font-bold text-amber-600 mb-2">Từ 50tr</div>
+                <button class="w-full bg-amber-500 text-white py-2 rounded-lg font-medium hover:bg-amber-600 transition">
+                    Xem chi tiết
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border shadow-sm p-6 hover:shadow-lg transition">
+                <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-heart text-pink-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-lg mb-2">Lễ Cưới</h4>
+                <p class="text-sm text-gray-600 mb-4">Dịch vụ tổ chức lễ cưới trọn gói với đội ngũ chuyên nghiệp</p>
+                <div class="text-2xl font-bold text-amber-600 mb-2">Từ 200tr</div>
+                <button class="w-full bg-amber-500 text-white py-2 rounded-lg font-medium hover:bg-amber-600 transition">
+                    Xem chi tiết
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border shadow-sm p-6 hover:shadow-lg transition">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-briefcase text-blue-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-lg mb-2">Sự kiện Doanh nghiệp</h4>
+                <p class="text-sm text-gray-600 mb-4">Tổ chức hội nghị, workshop, team building chuyên nghiệp</p>
+                <div class="text-2xl font-bold text-amber-600 mb-2">Từ 100tr</div>
+                <button class="w-full bg-amber-500 text-white py-2 rounded-lg font-medium hover:bg-amber-600 transition">
+                    Xem chi tiết
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border shadow-sm p-6 hover:shadow-lg transition">
+                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-graduation-cap text-green-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-lg mb-2">Lễ Tốt Nghiệp</h4>
+                <p class="text-sm text-gray-600 mb-4">Tổ chức lễ tốt nghiệp trang trọng và ý nghĩa</p>
+                <div class="text-2xl font-bold text-amber-600 mb-2">Từ 80tr</div>
+                <button class="w-full bg-amber-500 text-white py-2 rounded-lg font-medium hover:bg-amber-600 transition">
+                    Xem chi tiết
+                </button>
+            </div>
+        </div>
+
+        <!-- Gallery Sự kiện -->
+        <div class="bg-white rounded-2xl border shadow-sm p-6 mb-10">
+            <h4 class="font-bold text-lg mb-6 flex items-center gap-2">
+                <i class="fas fa-images text-amber-500"></i>
+                Gallery Sự kiện
+            </h4>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=400&auto=format&fit=crop" alt="Wedding" class="w-full h-full object-cover aspect-square group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">Lễ Cưới</span>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?q=80&w=400&auto=format&fit=crop" alt="Birthday" class="w-full h-full object-cover aspect-square group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">Sinh Nhật</span>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=400&auto=format&fit=crop" alt="Corporate" class="w-full h-full object-cover aspect-square group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">Doanh nghiệp</span>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=400&auto=format&fit=crop" alt="Graduation" class="w-full h-full object-cover aspect-square group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">Tốt Nghiệp</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <button class="text-amber-600 text-sm font-medium hover:text-amber-700 transition">
+                    Xem thêm hình ảnh →
+                </button>
+            </div>
+        </div>
+
+        <!-- Revenue Chart -->
+        <div class="bg-white rounded-2xl border shadow-sm p-6 mb-10">
+            <h4 class="font-bold text-sm mb-4">Thống kê doanh thu từ khách hàng</h4>
+            <div class="flex gap-2 mb-4">
+                <button onclick="setChartPeriod('7days')" class="period-btn px-3 py-1 bg-amber-500 text-white text-xs rounded">7 ngày</button>
+                <button onclick="setChartPeriod('1month')" class="period-btn px-3 py-1 bg-gray-500 text-white text-xs rounded">1 tháng</button>
+                <button onclick="setChartPeriod('1year')" class="period-btn px-3 py-1 bg-gray-500 text-white text-xs rounded">1 năm</button>
+            </div>
+            <canvas id="revenueChart"></canvas>
         </div>
 
         <!-- Order Table -->
@@ -335,6 +443,309 @@
                 }
             }
         }
+
+        // Chart functionality
+        let revenueChart;
+        let currentPeriod = '7days';
+
+        function initChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Doanh thu thực tế (VNĐ)',
+                        data: [],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + 'đ';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            updateChart();
+        }
+
+        function setChartPeriod(period) {
+            currentPeriod = period;
+            // Update button styles
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('bg-amber-500');
+                btn.classList.add('bg-gray-500');
+            });
+            event.target.classList.add('active');
+            event.target.classList.remove('bg-gray-500');
+            event.target.classList.add('bg-amber-500');
+            updateChart();
+        }
+
+        function updateChart() {
+            if (!revenueChart) return;
+
+            let labels = [];
+            let data = [];
+
+            const now = new Date();
+            let startDate;
+
+            if (currentPeriod === '7days') {
+                startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+                    labels.push(date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }));
+                    data.push(calculateRevenueForDate(date));
+                }
+            } else if (currentPeriod === '1month') {
+                startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate() + 1);
+                const weeks = [];
+                for (let i = 3; i >= 0; i--) {
+                    const weekStart = new Date(startDate.getTime() + i * 7 * 24 * 60 * 60 * 1000);
+                    const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+                    weeks.push({ start: weekStart, end: weekEnd });
+                }
+                weeks.forEach(week => {
+                    labels.push(`Tuần ${week.start.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })} - ${week.end.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}`);
+                    data.push(calculateRevenueForPeriod(week.start, week.end));
+                });
+            } else if (currentPeriod === '1year') {
+                for (let i = 11; i >= 0; i--) {
+                    const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+                    labels.push(monthStart.toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' }));
+                    data.push(calculateRevenueForPeriod(monthStart, monthEnd));
+                }
+            }
+
+            revenueChart.data.labels = labels;
+            revenueChart.data.datasets[0].data = data;
+            revenueChart.update();
+        }
+
+        function calculateRevenueForDate(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            return orders
+                .filter(order => {
+                    if (!order.time) return false;
+                    const orderDate = new Date(order.time);
+                    return orderDate.toISOString().split('T')[0] === dateStr;
+                })
+                .reduce((total, order) => {
+                    if (order.fullPaid) {
+                        return total + order.total;
+                    } else if (order.depositPaid) {
+                        return total + Math.round(order.total * 0.3);
+                    }
+                    return total;
+                }, 0);
+        }
+
+        function calculateRevenueForPeriod(startDate, endDate) {
+            return orders
+                .filter(order => {
+                    if (!order.time) return false;
+                    const orderDate = new Date(order.time);
+                    return orderDate >= startDate && orderDate <= endDate;
+                })
+                .reduce((total, order) => {
+                    if (order.fullPaid) {
+                        return total + order.total;
+                    } else if (order.depositPaid) {
+                        return total + Math.round(order.total * 0.3);
+                    }
+                    return total;
+                }, 0);
+        }
+
+        // Initialize chart when page loads
+        document.addEventListener('DOMContentLoaded', initChart);
+
+        // Update chart when orders change
+        const originalLoadOrders = loadOrders;
+        loadOrders = function(orderList) {
+            originalLoadOrders(orderList);
+            updateChart();
+            updateDashboard();
+        };
+
+        // Dashboard functionality
+        let packageChart;
+
+        function initDashboard() {
+            initPackageChart();
+            updateDashboard();
+        }
+
+        function initPackageChart() {
+            const ctx = document.getElementById('packageChart').getContext('2d');
+            packageChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#f59e0b',
+                            '#10b981',
+                            '#3b82f6',
+                            '#ef4444',
+                            '#8b5cf6'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDashboard() {
+            updatePackageChart();
+            updateTopCustomers();
+            updateRecentActivities();
+        }
+
+        function updatePackageChart() {
+            if (!packageChart) return;
+
+            const packageCounts = {};
+            orders.forEach(order => {
+                const pkg = order.package || 'Chưa chọn';
+                packageCounts[pkg] = (packageCounts[pkg] || 0) + 1;
+            });
+
+            const labels = Object.keys(packageCounts);
+            const data = Object.values(packageCounts);
+
+            packageChart.data.labels = labels;
+            packageChart.data.datasets[0].data = data;
+            packageChart.update();
+        }
+
+        function updateTopCustomers() {
+            const customerTotals = {};
+            orders.forEach(order => {
+                const customer = order.customer;
+                if (!customerTotals[customer]) {
+                    customerTotals[customer] = { total: 0, orders: 0 };
+                }
+                customerTotals[customer].total += order.total;
+                customerTotals[customer].orders += 1;
+            });
+
+            const topCustomers = Object.entries(customerTotals)
+                .sort(([,a], [,b]) => b.total - a.total)
+                .slice(0, 5);
+
+            const topCustomersDiv = document.getElementById('topCustomers');
+            topCustomersDiv.innerHTML = '';
+
+            if (topCustomers.length === 0) {
+                topCustomersDiv.innerHTML = '<p class="text-sm text-gray-500">Chưa có dữ liệu khách hàng</p>';
+                return;
+            }
+
+            topCustomers.forEach(([customer, data], index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
+                topCustomersDiv.innerHTML += `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg">${medal}</span>
+                            <div>
+                                <div class="font-medium text-sm">${customer}</div>
+                                <div class="text-xs text-gray-500">${data.orders} đơn hàng</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-sm text-amber-600">${data.total.toLocaleString()}đ</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateRecentActivities() {
+            const recentOrders = [...orders]
+                .filter(order => order.time)
+                .sort((a, b) => new Date(b.time) - new Date(a.time))
+                .slice(0, 10);
+
+            const activitiesDiv = document.getElementById('recentActivities');
+            activitiesDiv.innerHTML = '';
+
+            if (recentOrders.length === 0) {
+                activitiesDiv.innerHTML = '<p class="text-sm text-gray-500">Chưa có hoạt động nào</p>';
+                return;
+            }
+
+            recentOrders.forEach(order => {
+                const timeAgo = getTimeAgo(new Date(order.time));
+                const statusColor = order.status === 'Đã xác nhận' ? 'text-green-600' : 'text-amber-600';
+                const statusIcon = order.status === 'Đã xác nhận' ? 'fas fa-check-circle' : 'fas fa-clock';
+
+                activitiesDiv.innerHTML += `
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="${statusIcon} text-amber-600 text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm">
+                                <span class="font-medium">${order.customer}</span>
+                                <span class="text-gray-500">đặt gói</span>
+                                <span class="font-medium text-amber-600">${order.package}</span>
+                            </div>
+                            <div class="text-xs text-gray-500 flex items-center gap-2">
+                                <span>${timeAgo}</span>
+                                <span class="${statusColor}"><i class="${statusIcon} mr-1"></i>${order.status || 'MỚI'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+
+            if (diffInSeconds < 60) return 'vừa xong';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} phút trước`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+            return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initChart();
+            initDashboard();
+        });
     </script>
 </body>
 </html>
