@@ -7,6 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Socket.IO initialization moved to body script
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
@@ -193,6 +197,23 @@
                     <h5 class="font-semibold text-sm mb-1">Giá cả hợp lý</h5>
                     <p class="text-xs text-gray-600">Chi phí tối ưu với chất lượng dịch vụ cao</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border shadow-sm p-8 mb-10 max-w-7xl mx-auto px-4">
+        <div class="text-center mb-6">
+            <h4 class="font-bold text-2xl mb-4 flex items-center justify-center gap-2">
+                <i class="fas fa-qrcode text-amber-500"></i>
+                Quét Mã QR Để Truy Cập
+            </h4>
+            <p class="text-gray-600">Sử dụng điện thoại của bạn để quét mã QR và truy cập nhanh vào trang khách hàng của chúng tôi.</p>
+        </div>
+        <div class="flex justify-center">
+            <div class="bg-white p-6 rounded-2xl shadow-lg border">
+                <div id="qrcode" class="w-48 h-48 mx-auto"></div>
+                <p class="text-center text-sm text-gray-500 mt-4">Quét mã QR để truy cập dành riêng cho khách hàng của chúng tôi.</p>
             </div>
         </div>
     </div>
@@ -438,7 +459,9 @@
     </div>
 
     <script>
-        const socket = io();
+        // Initialize Socket.IO connection
+        const socket = io(window.location.origin);
+
         let selectedPkg = "";
         let basePrice = 0;
         let currentUser = null;
@@ -589,7 +612,7 @@
                 total: total,
                 depositPaid: false,
                 fullPaid: false,
-                time: new Date().toLocaleString('vi-VN'),
+                time: new Date().toISOString(),
                 status: "MỚI",
                 userId: currentUser.id
             };
@@ -598,6 +621,24 @@
             document.getElementById('bookingModal').classList.add('hidden');
             document.getElementById('successMessage').classList.remove('hidden');
         }
+
+        // Generate QR Code
+        window.onload = function() {
+            checkAuth();
+            // Generate QR code for the current page
+            const qrCodeUrl = window.location.href;
+            const qrCodeElement = document.getElementById('qrcode');
+            QRCode.toCanvas(qrCodeElement, qrCodeUrl, {
+                width: 192, // 48 * 4 for high resolution
+                height: 192,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            }, function (error) {
+                if (error) console.error(error);
+            });
+        };
+
     </script>
 </body>
 </html>
